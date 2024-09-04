@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { IoIosVideocam } from "react-icons/io";
 import { IoSearch } from "react-icons/io5";

@@ -1,27 +1,38 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
 import BannerImage from "../assets/account-banner.png";
 import GoogleIcon from "../assets/google.ico";
-import { FormEvent, useState } from "react";
+import { Dispatch, FormEvent, SetStateAction, useRef, useState } from "react";
 import { LuChevronRight } from "react-icons/lu";
-import { FaEye } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const LOGIN = "login";
 const SIGNUP = "signup";
 
 interface UserFormProps {
   formType: typeof LOGIN | typeof SIGNUP;
+  setUserEmail: Dispatch<SetStateAction<string>>;
+  setUserPassword: Dispatch<SetStateAction<string>>;
 }
 
-export default function UserForm({ formType }: UserFormProps) {
+export default function UserForm(props: UserFormProps) {
+  const { formType, setUserEmail, setUserPassword } = props;
+
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  const passwordInputRef = useRef<HTMLInputElement>(null);
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    const email = emailInputRef.current?.value;
+    const password = passwordInputRef.current?.value;
+
+    if (email && password) {
+      setUserEmail(email);
+      setUserPassword(password);
+    } else alert("Please enter a valid email and password");
   }
 
   return (
@@ -54,15 +65,13 @@ export default function UserForm({ formType }: UserFormProps) {
           <form className="my-6 flex flex-col gap-2" onSubmit={handleSubmit}>
             <div className="relative flex flex-col-reverse">
               <input
-                onChange={(e) => setEmail(e.target.value)}
+                ref={emailInputRef}
                 id="email"
                 className="peer rounded-md border-2 border-purple-700 bg-gray-100 px-2 py-4 outline-none duration-300 ease-in-out focus:bg-purple-100"
                 type="email"
               />
               <label
-                className={`absolute left-2 z-10 text-sm text-purple-700 duration-300 ease-in-out peer-focus:top-0 peer-focus:translate-y-0 ${
-                  email ? "top-0 translate-y-0" : "top-1/2 -translate-y-1/2"
-                }`}
+                className="absolute left-2 top-0.5 z-10 translate-y-0 text-sm text-purple-700 duration-300 ease-in-out"
                 htmlFor="email"
               >
                 Email
@@ -70,25 +79,18 @@ export default function UserForm({ formType }: UserFormProps) {
             </div>
             <div className="relative flex flex-col-reverse">
               <input
-                onChange={(e) => setPassword(e.target.value)}
+                ref={passwordInputRef}
                 id="password"
                 className="peer z-0 rounded-md border-2 border-purple-700 bg-gray-100 px-2 py-4 outline-none duration-300 ease-in-out focus:bg-purple-100"
                 type={showPassword ? "text" : "password"}
               />
               <label
-                className={`absolute left-2 z-10 text-sm text-purple-700 duration-300 ease-in-out peer-focus:top-0 peer-focus:translate-y-0 ${
-                  password ? "top-0 translate-y-0" : "top-1/2 -translate-y-1/2"
-                }`}
+                className="absolute left-2 top-0.5 z-10 translate-y-0 text-sm text-purple-700 duration-300 ease-in-out"
                 htmlFor="password"
               >
                 Password
               </label>
-              {password && (
-                <FaEye
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-2 top-1/2 z-10 -translate-y-1/2 cursor-pointer text-lg text-gray-700"
-                />
-              )}
+              <TogglePassword show={showPassword} setShow={setShowPassword} />
             </div>
             <button className="group flex items-center justify-center rounded-md bg-purple-700 px-3 py-4 text-white">
               <span className="text-lg">
@@ -124,4 +126,28 @@ export default function UserForm({ formType }: UserFormProps) {
       </div>
     </main>
   );
+}
+
+interface TogglePasswordProps {
+  show: boolean;
+  setShow: Dispatch<SetStateAction<boolean>>;
+}
+
+function TogglePassword({ show, setShow }: TogglePasswordProps) {
+  switch (show) {
+    case true:
+      return (
+        <FaEyeSlash
+          onClick={() => setShow((prev) => !prev)}
+          className="absolute right-2 top-1/2 z-10 -translate-y-1/2 cursor-pointer text-lg text-gray-700"
+        />
+      );
+    case false:
+      return (
+        <FaEye
+          onClick={() => setShow((prev) => !prev)}
+          className="absolute right-2 top-1/2 z-10 -translate-y-1/2 cursor-pointer text-lg text-gray-700"
+        />
+      );
+  }
 }

@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import ThemeProvider from "@/providers/ThemeProvider";
 import ReduxProvider from "@/providers/ReduxProvider";
+import ApolloClientProvider from "@/providers/ApolloClientProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,9 +19,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ReduxProvider>
-          <ThemeProvider>{children}</ThemeProvider>
-        </ReduxProvider>
+        <ApolloClientProvider>
+          <ReduxProvider>
+            <ThemeProvider>{children}</ThemeProvider>
+          </ReduxProvider>
+        </ApolloClientProvider>
       </body>
     </html>
   );

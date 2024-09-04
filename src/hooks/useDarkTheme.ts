@@ -8,7 +8,7 @@ export const useDarkTheme = () => {
     if (isDarkTheme) {
       setDarkTheme(JSON.parse(isDarkTheme));
     }
-  }, [setDarkTheme]);
+  }, []);
 
   useEffect(() => {
     if (darkTheme) {

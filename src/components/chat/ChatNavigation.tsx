@@ -1,5 +1,3 @@
-"use client";
-
 import { AiOutlineLogout } from "react-icons/ai";
 import { TbMessageDots } from "react-icons/tb";
 import { LuChevronLeft, LuMenu } from "react-icons/lu";
