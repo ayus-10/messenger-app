@@ -8,12 +8,19 @@ import { useEffect } from "react";
 
 const AUTH_QUERY = gql`
   query AuthQuery {
-    auth
+    auth {
+      __typename
+      email
+      fullName
+    }
   }
 `;
 
 interface AuthQueryResponse {
-  auth: string | null;
+  auth: {
+    email: string;
+    fullName: string;
+  } | null;
 }
 
 export const useAuthentication = () => {

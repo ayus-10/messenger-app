@@ -1,6 +1,7 @@
 "use client";
 
 import UserForm from "@/components/UserForm";
+import { useAuthentication } from "@/hooks/useAuthentication";
 import { gql, useLazyQuery } from "@apollo/client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -13,7 +14,7 @@ interface LoginQueryResponse {
 }
 
 const LOGIN_QUERY = gql`
-  query LoginQuery($user: UserCredentialsInput!) {
+  query LoginQuery($user: LoginInput!) {
     loginUser(user: $user) {
       __typename
       token
@@ -22,7 +23,7 @@ const LOGIN_QUERY = gql`
 `;
 
 export default function Login() {
-  // TODO: redirect if logged in
+  useAuthentication();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,6 +34,7 @@ export default function Login() {
     useLazyQuery<LoginQueryResponse>(LOGIN_QUERY);
 
   useEffect(() => {
+    // 'email' and 'password' will be set by the 'UserForm' component after user submission
     if (email && password) login({ variables: { user: { email, password } } });
   }, [email, password, login]);
 

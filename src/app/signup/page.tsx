@@ -1,6 +1,7 @@
 "use client";
 
 import UserForm from "@/components/UserForm";
+import { useAuthentication } from "@/hooks/useAuthentication";
 import { gql, useMutation } from "@apollo/client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -13,7 +14,7 @@ interface SignupMutationResponse {
 }
 
 const SIGNUP_MUTATION = gql`
-  mutation SignupMutation($user: UserCredentialsInput!) {
+  mutation SignupMutation($user: SignupInput!) {
     createUser(user: $user) {
       __typename
       token
@@ -22,10 +23,11 @@ const SIGNUP_MUTATION = gql`
 `;
 
 export default function Signup() {
-  // TODO: redirect if logged in
+  useAuthentication();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
 
   const router = useRouter();
 
@@ -33,8 +35,10 @@ export default function Signup() {
     useMutation<SignupMutationResponse>(SIGNUP_MUTATION);
 
   useEffect(() => {
-    if (email && password) signup({ variables: { user: { email, password } } });
-  }, [email, password, signup]);
+    // 'email', 'password' and 'fullName' will be set by the 'UserForm' component after user submission
+    if (email && password && fullName)
+      signup({ variables: { user: { email, password, fullName } } });
+  }, [email, password, signup, fullName]);
 
   useEffect(() => {
     if (!loading) {
@@ -54,6 +58,7 @@ export default function Signup() {
       formType="signup"
       setUserEmail={setEmail}
       setUserPassword={setPassword}
+      setUserFullName={setFullName}
     />
   );
 }

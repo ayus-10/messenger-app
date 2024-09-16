@@ -13,26 +13,37 @@ interface UserFormProps {
   formType: typeof LOGIN | typeof SIGNUP;
   setUserEmail: Dispatch<SetStateAction<string>>;
   setUserPassword: Dispatch<SetStateAction<string>>;
+  setUserFullName?: Dispatch<SetStateAction<string>>;
 }
 
 export default function UserForm(props: UserFormProps) {
-  const { formType, setUserEmail, setUserPassword } = props;
+  const { formType, setUserEmail, setUserPassword, setUserFullName } = props;
 
   const [showPassword, setShowPassword] = useState(false);
 
+  const fullNameInputRef = useRef<HTMLInputElement>(null);
   const emailInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
+    const fullName = fullNameInputRef.current?.value;
     const email = emailInputRef.current?.value;
     const password = passwordInputRef.current?.value;
 
-    if (email && password) {
-      setUserEmail(email);
-      setUserPassword(password);
-    } else alert("Please enter a valid email and password");
+    if (formType === LOGIN) {
+      if (email && password) {
+        setUserEmail(email);
+        setUserPassword(password);
+      } else alert("Please fill up all the data");
+    } else {
+      if (email && password && fullName && setUserFullName) {
+        setUserEmail(email);
+        setUserPassword(password);
+        setUserFullName(fullName);
+      } else alert("Please fill up all the data");
+    }
   }
 
   return (
@@ -63,6 +74,22 @@ export default function UserForm(props: UserFormProps) {
             <div className="h-[1px] grow bg-gray-300"></div>
           </div>
           <form className="my-6 flex flex-col gap-2" onSubmit={handleSubmit}>
+            <div
+              className={`relative flex-col-reverse ${formType === LOGIN ? "hidden" : "flex"}`}
+            >
+              <input
+                ref={fullNameInputRef}
+                id="fullName"
+                className="peer rounded-md border-2 border-purple-700 bg-gray-100 px-2 py-4 outline-none duration-300 ease-in-out focus:bg-purple-100"
+                type="text"
+              />
+              <label
+                className="absolute left-2 top-0.5 z-10 translate-y-0 text-sm text-purple-700 duration-300 ease-in-out"
+                htmlFor="fullName"
+              >
+                Full name
+              </label>
+            </div>
             <div className="relative flex flex-col-reverse">
               <input
                 ref={emailInputRef}
