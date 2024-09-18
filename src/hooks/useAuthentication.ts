@@ -34,9 +34,13 @@ export const useAuthentication = () => {
     if (!loading) {
       if (data?.auth) {
         dispatch(setAuthenticatedUser(data.auth));
-        if (location.pathname !== "/chat") router.push("/chat");
+        if (location.pathname !== "/chat") {
+          router.push("/chat");
+        }
       } else {
-        router.push("/login");
+        if (location.pathname !== "/login" && location.pathname !== "/signup") {
+          router.push("/login");
+        }
       }
     }
   }, [loading, data, error, dispatch, router]);
