@@ -21,7 +21,7 @@ export default function ChatNavigation() {
 
   useEffect(() => {
     setShowNavigation(window.innerWidth >= 768);
-  }, [setShowNavigation]);
+  }, []);
 
   function changeActiveTab(tab: ActiveTab) {
     setActiveTab(tab);
